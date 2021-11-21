@@ -1,0 +1,41 @@
+{
+	"english" : {
+		"english" : "English",
+		"hungarian" : "Hungarian",
+		"finnish" : "Finnish",
+		"languageSelect" : "Language" ,
+		"languageA" : "My language" ,
+		"languageB" : "Learn" ,
+		"streak" : "Winstreak: " ,
+		"record" : "Highscore: " ,
+		"flashcard" : "flashcard" ,
+		"feedback" : "wrong answer" ,
+		"summary" : "score"
+	} ,
+	"hungarian" : {
+		"english" : "Angol",
+		"hungarian" : "Magyar",
+		"finnish" : "Finn",
+		"languageSelect" : "Nyelvválasztás" , 
+		"languageA" : "Az én nyelvem:" ,
+		"languageB" : "Tanult nyelv:" ,
+		"streak" : "Nyerési Sorozat: " ,
+		"record" : "Rekord: " ,
+		"flashcard" : "flash kártya" ,
+		"feedback" : "rossz válasz" ,
+		"summary" : "eredmény"
+	} ,
+	"finnish" : {
+		"english" : "Englantin kieli" ,
+		"hungarian" : "Unkarin kieli" ,
+		"finnish" : "Suomen kieli" ,
+		"languageSelect" : "Kielen Valinta" ,
+		"languageA" : "Minum kieleni:" ,
+		"languageB" : "Kieli jota opiskelen:" ,
+		"streak" : "Voittoputki" ,
+		"record" : "Hipputulokset: " ,
+		"flashcard" : "flash-kortti" ,
+		"feedback" : "väärä vastaus" ,
+		"summary" : "pisteet"
+	} ,
+}
