@@ -1,107 +1,51 @@
 import * as React from 'react';
-import { Button, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { Button, FlatList, ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import dictionaryFile from './dictionary.json';
 import textFile from './text.json';
-import flags from './langSelect.png';
 import red from './red.png';
 
 const numberOfButtons = 2;
+
+const WORDLIST = []
+
 var highscore = 0;
 var winstreak = 0;
 var baseLanguage = new Array();
 var targetLanguage = new Array();
 var textContent = textFile.hungarian;
-baseLanguage = dictionaryFile.hungarian;
-targetLanguage = dictionaryFile.english;
-
-function BaseSelectScreen({ navigation }) {
-	return (
-		<View style={styles.languageSelectContainer}>
-			<Text style={styles.languageSelectTitleLeft}>
-				{textContent.languageA}
-			</Text>
-			<Button
-				title = "English"
-				onPress = {() => {
-					baseLanguage = dictionaryFile.english;
-					textContent = textFile.english;
-					navigation.navigate('TargetSelect');
-				}}
-			/>
-			<Button
-				title = "Magyar"
-				onPress = {() => {
-					baseLanguage = dictionaryFile.hungarian;
-					textContent = textFile.hungarian;
-					navigation.navigate('TargetSelect');
-				}}
-			/>
-			<Button
-				title = "Suomeksi"
-				onPress = {() => {
-					baseLanguage = dictionaryFile.finnish;	
-					textContent = textFile.finnish;
-					navigation.navigate('TargetSelect');
-				}}
-			/>
-		</View>
-	);
-}
-
-function TargetSelectScreen({ navigation }) {
-	return (
-		<View style={styles.languageSelectContainerRight}>
-			<Text style={styles.languageSelectTitleRight}>
-				{textContent.languageB}
-			</Text>
-			<Button
-				title = {textContent.english}
-				onPress = {() => {
-					targetLanguage = dictionaryFile.english;
-					navigation.navigate('Quiz');
-				}}
-			/>
-			<Button
-				title = {textContent.hungarian}
-				onPress = {() => {
-					targetLanguage = dictionaryFile.hungarian;
-					navigation.navigate('Quiz');
-				}}
-			/>
-			<Button
-				title = {textContent.finnish}
-				onPress = {() => {
-					targetLanguage = dictionaryFile.finnish;	
-					navigation.navigate('Quiz');
-				}}
-			/>
-		</View>
-	);
-}
 
 function QuizScreen({ navigation }) {
-	var wrongWord = Math.floor(Math.random() * baseLanguage.length);
-	var correctWord = Math.floor(Math.random() * baseLanguage.length);
+
+	/* these are always indexes of english phrases - odd numbers */
+	var wrongWord = 2 * Math.floor(Math.random() * (dictionaryFile.length / 2 + 1)); 
+	var correctWord = 2 * Math.floor(Math.random() * (dictionaryFile.length / 2 + 1));
 	var correctButton = Math.floor(Math.random() * numberOfButtons);
+	var prompt = "";
 	var firstButton = "";
 	var secondButton = "";
 
+	/* + 1 to reach the hungarian equivalent - even numbers */
 	if (correctButton == 0) {
-		firstButton = baseLanguage[correctWord];
-		secondButton = baseLanguage[wrongWord];
+		firstButton = dictionaryFile[correctWord + 1];
+		secondButton = dictionaryFile[wrongWord + 1];
 	} else {
-		firstButton = baseLanguage[wrongWord];
-		secondButton = baseLanguage[correctWord];
+		firstButton = dictionaryFile[wrongWord + 1];
+		secondButton = dictionaryFile[correctWord + 1];
 	};
+	prompt = dictionaryFile[correctWord];
+	WORDLIST.push({title: dictionaryFile[correctWord]});
+	WORDLIST.push({title: dictionaryFile[correctWord+1]});
 
 	return (
 		<View style={styles.quizContainer}>
+
 			<View>
-				<Text style={styles.feedbackText}> {targetLanguage[correctWord]} </Text>
+				<Text style={styles.feedbackText}> {prompt} </Text>
 			</View>
+
 			<View style={styles.quizButtonContainer}>
 				<View style={styles.quizButton}>
 					<Button
@@ -144,10 +88,10 @@ function FeedbackScreen({ route, navigation }) {
 					<View style={styles.feedbackTextContainer}>
 						<View>
 							<Text style={styles.feedbackText}>
-								{targetLanguage[route.params.correct]}
+								{dictionaryFile[route.params.correct]}
 							</Text>
 							<Text style={styles.feedbackText2}>
-								{baseLanguage[route.params.correct]}
+								{dictionaryFile[route.params.correct +1]}
 							</Text>
 						</View>
 					</View>
@@ -168,73 +112,94 @@ function FeedbackScreen({ route, navigation }) {
 function SummaryScreen({ navigation }) {
 	return (
 		<View style={styles.summaryContainer}>
-			<ImageBackground
-				source={flags}
-				resizeMode="cover"
-				style={{flex:1, justifyContent: "center"}}>
-					<View style={styles.summaryTextContainer}>
-						<Text style={styles.streakText}>{textContent.streak}</Text>
-						<Text style={styles.winstreakText}> {winstreak} </Text>
-						<Text style={styles.highscoreText}> {textContent.record} {highscore} </Text>
+
+				<View style={styles.summaryTextContainer}>
+					<Text style={styles.streakText}>
+						{textContent.streak}
+					</Text>
+					<Text style={styles.winstreakText}>
+						{winstreak}
+					</Text>
+					<Text style={styles.highscoreText}>
+						{textContent.record} {highscore}
+					</Text>
+				</View>
+
+				<View style={styles.summaryButtonContainer}>
+					<View style={styles.summaryButton}>
+						<Button
+							title = "Szó Lista"
+							onPress = {() => {
+								winstreak = 0;
+								navigation.navigate('List');
+							}}
+						/>
 					</View>
-					<View style={styles.summaryButtonContainer}>
-						<View style={styles.summaryButton}>
-							<Button
-								title = {textContent.languageSelect}
-								onPress = {() => {
-									winstreak = 0;
-									navigation.navigate('BaseSelect');
-								}}
-							/>
-						</View>
-						<View style={styles.summaryButton}>
-							<Button
-								title = "OK"
-								onPress = {() => {
-									winstreak = 0;
-									navigation.navigate('Quiz');
-								}}
-							/>
-						</View>
+					<View style={styles.summaryButton}>
+						<Button
+							title = "Új játék"
+							onPress = {() => {
+								winstreak = 0;
+								navigation.navigate('Quiz');
+							}}
+						/>
 					</View>
-			</ImageBackground>
+
+				</View>
+
+		</View>
+	);
+}
+
+const Item = ({ title }) => (
+  <View style={styles.listItem}>
+    <Text style={styles.listTitle}>{title}</Text>
+  </View>
+);
+function ListScreen({ navigation }) {
+	const renderItem = ({ item }) => (
+		<Item title={item.title} />
+	);  
+
+	return (
+		<View style={styles.listContainer}>
+			<FlatList
+				numColumns = {2}
+				key = {2}
+				data = {WORDLIST}
+				renderItem = {renderItem}
+			/>
 		</View>
 	);
 }
 
 const Stack = createNativeStackNavigator();
-
 function App() {
 	return (
-	<NavigationContainer initialRouteName="BaseSelect">
-		<Stack.Navigator>
-			<Stack.Screen
-				name = "BaseSelect"
-				component = {BaseSelectScreen}
-				options = {{ title: "" }}
-			/>
-			<Stack.Screen
-				name = "TargetSelect"
-				component = {TargetSelectScreen}
-				options = {{ title: "" }}
-			/>
-			<Stack.Screen
-				name = "Quiz"
-				component = {QuizScreen}
-				options = {{ title: "" }}
-			/>
-			<Stack.Screen
-				name = "Feedback"
-				component = {FeedbackScreen}
-				options = {{ title: "" }}
-			/>
-			<Stack.Screen
-				name = "Summary"
-				component = {SummaryScreen}
-				options = {{ title: "" }}
-			/>
-		</Stack.Navigator>
-	</NavigationContainer>
+		<NavigationContainer initialRouteName="Quiz">
+			<Stack.Navigator>
+				<Stack.Screen
+					name = "Quiz"
+					component = {QuizScreen}
+					options = {{ title: "Válassza ki a jó fordítást!" }}
+				/>
+				<Stack.Screen
+					name = "Feedback"
+					component = {FeedbackScreen}
+					options = {{ title: "Rossz válasz" }}
+				/>
+				<Stack.Screen
+					name = "Summary"
+					component = {SummaryScreen}
+					options = {{ title: "Játék Vége" }}
+				/>
+				<Stack.Screen
+					name = "List"
+					component = {ListScreen}
+					options = {{ title: "Szó Lista" }}
+				/>
+			</Stack.Navigator>
+		</NavigationContainer>
 	);
 }
 
@@ -265,22 +230,24 @@ const styles = StyleSheet.create({
 		textAlign : 'right'
 	},
 	quizButton: {
-		width: '33%',
+/*		width: '33%',
 		height: 40,
-		margin: 30
+*/		margin: 20
 	},
 	quizButtonContainer: {
-		flex: 1,
+/*		flex: 1,
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+*/		justifyContent: 'space-between',
 	},
 	feedbackText: {
-		fontSize: 50,
+		fontSize: 32,
 		padding: 20,
-		textAlign: 'center'
+		textAlign: 'center' ,
+		color: 'black',
+		fontStyle : "italic"
 	},
 	feedbackText2: {
-		fontSize: 50,
+		fontSize: 32,
 		padding:20,
 		textAlign: 'center',
 		color: 'black'
@@ -332,6 +299,21 @@ const styles = StyleSheet.create({
 	},
 	summaryTextContainer: {
 		flex:2
+	},
+	listTitle: {
+		fontSize: 20,
+		color: '#FFFFFF',
+	},
+	listItem: {
+		flex: 1,
+		backgroundColor: '#0066CC',
+		padding: 8,
+		marginVertical: 8,
+		marginHorizontal: 8,
+		flexShrink: 1 ,
+	},
+	listContainer: {
+		flex: 1,
 	},
 });
 

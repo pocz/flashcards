@@ -19,23 +19,10 @@
 		"languageSelect" : "Nyelvválasztás" , 
 		"languageA" : "Az én nyelvem:" ,
 		"languageB" : "Tanult nyelv:" ,
-		"streak" : "Nyerési Sorozat: " ,
+		"streak" : "Jó válaszok: " ,
 		"record" : "Rekord: " ,
 		"flashcard" : "flash kártya" ,
 		"feedback" : "rossz válasz" ,
 		"summary" : "eredmény"
-	} ,
-	"finnish" : {
-		"english" : "Englantin kieli" ,
-		"hungarian" : "Unkarin kieli" ,
-		"finnish" : "Suomen kieli" ,
-		"languageSelect" : "Kielen Valinta" ,
-		"languageA" : "Minum kieleni:" ,
-		"languageB" : "Kieli jota opiskelen:" ,
-		"streak" : "Voittoputki" ,
-		"record" : "Hipputulokset: " ,
-		"flashcard" : "flash-kortti" ,
-		"feedback" : "väärä vastaus" ,
-		"summary" : "pisteet"
 	} ,
 }
